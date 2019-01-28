@@ -1,3 +1,3 @@
-# flask-atlas
+# flask-simple-store
 
-Flask project for Atlas Authentication Server.
+Flask project for Simple Store Server.

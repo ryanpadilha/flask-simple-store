@@ -4,5 +4,5 @@
 
 echo "stop python application"
 
-PID=$(cat /var/wplex/run/gunicorn-atlas.pid)
+PID=$(cat /var/named/run/gunicorn-simple.pid)
 kill -9 $PID

@@ -13,8 +13,8 @@ cd $(dirname $0) && cd ..
 to_console "activate virtual environment sandbox"
 source venv-sandbox/bin/activate
 
-PID=/var/wplex/run/gunicorn-atlas.pid
+PID=/var/named/run/gunicorn-simple.pid
 if [ -f $PID ]; then rm $PID; fi
 
 to_console "start python application"
-exec gunicorn -w 3 --bind=0.0.0.0:8000 --user=admin --log-level=debug --pid=$PID --log-file=/var/wplex/logs/atlas-ui.wplexservices.com.br/gunicorn.log 2>>/var/wplex/logs/atlas-ui.wplexservices.com.br/gunicorn.log wsgi:application &
+exec gunicorn -w 3 --bind=0.0.0.0:8000 --user=ubuntu --log-level=debug --pid=$PID --log-file=/var/named/logs/simple-server/gunicorn.log 2>>/var/named/logs/simple-server/gunicorn.log wsgi:application &
