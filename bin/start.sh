@@ -17,4 +17,4 @@ PID=/var/named/run/gunicorn-simple.pid
 if [ -f $PID ]; then rm $PID; fi
 
 to_console "start python application"
-exec gunicorn -w 3 --bind=0.0.0.0:8000 --user=ubuntu --log-level=debug --pid=$PID --log-file=/var/named/logs/simple-server/gunicorn.log 2>>/var/named/logs/simple-server/gunicorn.log wsgi:application &
+exec gunicorn -w 3 --bind=0.0.0.0:8000 --user=ubuntu --log-level=debug --pid=$PID --log-file=/var/named/logs/sapiensx.com.br/gunicorn.log 2>>/var/named/logs/sapiensx.com.br/gunicorn.log wsgi:application &
