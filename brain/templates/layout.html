@@ -135,6 +135,10 @@
         todayHighlight: true
     });
 
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
     // input-mask
     $('#address-zip').inputmask('99999-999')
     $('#document-main-cnpj').inputmask('99.999.999/9999-99')

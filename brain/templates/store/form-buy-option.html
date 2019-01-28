@@ -45,9 +45,13 @@
             allowNegative: false,
             symbolStay: true});
 
-        $("#normal_price").maskMoney('mask', $("#normal_price").val());
-        $("#sale_price").maskMoney('mask', $("#sale_price").val());
-        $("#percentage_discount").maskMoney('mask', $("#percentage_discount").val());
+        var in_normal_price = $("#normal_price").maskMoney('unmasked')[0];
+        var in_sale_price = $("#sale_price").maskMoney('unmasked')[0];
+        var in_percentage_discount = $("#percentage_discount").maskMoney('unmasked')[0];
+
+        $("#normal_price").maskMoney('mask', in_normal_price);
+        $("#sale_price").maskMoney('mask', in_sale_price);
+        $("#percentage_discount").maskMoney('mask', in_percentage_discount);
 
         $("#normal_price").bind('keyup', function () {
             var price = $(this).maskMoney('unmasked')[0];
@@ -64,7 +68,8 @@
 
                 discount = parseFloat(discount);
                 price_full = parseFloat(price_full);
-                price_discount = price_full - (Math.round(price_full * discount) / 100);
+                price_discount = price_full - (price_full * discount / 100);
+                price_discount = Math.floor(price_discount)
            }
 
            $("#sale_price").maskMoney('mask', price_discount);
@@ -110,6 +115,9 @@
                     <div class="col-md-4">
                         <div {% if form.normal_price.errors %} class="form-group has-error" {% else %} class="form-group" {% endif %}>
                             {{ form.normal_price.label }}
+                            <a href="javascript:void(0);" tabindex="-1" data-toggle="tooltip" data-placement="right" title="O valor de venda normal é o valor base. Quando aplicado desconto o valor de venda final é calculado.">
+                                <i class="fa fa-fw fa-question-circle"></i>
+                            </a>
                             {{ form.normal_price(class_='form-control', autocomplete='nope') }}
 
                             {% for error in form.normal_price.errors %}

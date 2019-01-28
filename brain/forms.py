@@ -70,6 +70,10 @@ class BuyOptionForm(BaseForm):
             self.sale_price.errors.append('Preço de venda final deve ser maior que 0')
             valid = False
 
+        if self.percentage_discount.data and convert_to_currency(self.percentage_discount.data) > 100:
+            self.percentage_discount.errors.append('Percentual de desconto não deve ser maior que 100')
+            valid = False
+
         if self.percentage_discount.data and convert_to_currency(self.percentage_discount.data) < 0:
             self.percentage_discount.errors.append('Percentual de desconto deve ser maior que 0')
             valid = False
@@ -124,7 +128,7 @@ class DealForm(BaseForm):
         super(DealForm, self).__init__(**kwargs)
         self.type.choices = StatusType.list()
 
-        collection = BuyOptionResource().list()
+        collection = BuyOptionResource().list_all_available()
         self.options.choices = [(o.id, o.title) for o in collection]
 
     def validate(self):

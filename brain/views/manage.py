@@ -110,6 +110,8 @@ def list_deals():
 @login_required
 def form_deal():
     form = DealForm()
+    collection = BuyOptionResource().all_available_without_relation()
+    form.options.choices = [(o.id, o.title) for o in collection]
 
     if form.validate_on_submit():
         deal = DealObject(title=form.title.data,
@@ -140,15 +142,22 @@ def form_deal():
 @login_required
 def edit_deal(id):
     form = DealForm()
+    current_collection = []
+
+    option_item_list = []
+    deal = DealResource().get_by_id(id=id)
+    for o in deal.options:
+        option_item_list.append(o.id)
+        current_collection.append(BuyOptionResource().get_by_id(o.id))
+
+    # only without relation
+    collection = BuyOptionResource().all_available_without_relation() + current_collection
+    form.options.choices = [(o.id, o.title) for o in collection]
 
     if request.method == 'GET':
-        deal = DealResource().get_by_id(id=id)
         if not isinstance(deal, ErrorObject):
             form.process(obj=deal, type=deal.type, h_total_sold=deal.total_sold, h_url=deal.url)
 
-            option_item_list = []
-            for o in deal.options:
-                option_item_list.append(o.id)
             form.options.default = option_item_list
             form.options.process(None)
 
@@ -220,6 +229,7 @@ def buy_option(deal, option):
             flash(obj.issues, category=FlashMessagesCategory.ERROR.value)
             return render_template('store/view-deal.html', deal=deal)
 
+        flash(u'Compra de oferta realizada com sucesso.', category=FlashMessagesCategory.INFO.value)
         return redirect(url_for('website.index'))
     except Exception as e:
         abort(500, e)

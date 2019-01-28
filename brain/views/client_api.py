@@ -35,6 +35,7 @@ class ApiResource(object):
         return {
             'list': self.api_url_backend + '/api/v1/buy-options',
             'list_all_available': self.api_url_backend + '/api/v1/buy-options/all-available',
+            'all_available_without_relation': self.api_url_backend + '/api/v1/buy-options/all-available-without-relation',
             'get_by_id': self.api_url_backend + '/api/v1/buy-options/{}',
             'persist': self.api_url_backend + '/api/v1/buy-options',
             'update': self.api_url_backend + '/api/v1/buy-options/{}',
@@ -191,6 +192,10 @@ class BuyOptionResource(IntegrationResource):
 
     def list_all_available(self):
         obj = self.invoke_request(RequestMethod.GET, url=self.api_dict.get('list_all_available'))
+        return [] if isinstance(obj, ErrorObject) else BuyOptionObject.to_list_of_object(obj)
+
+    def all_available_without_relation(self):
+        obj = self.invoke_request(RequestMethod.GET, url=self.api_dict.get('all_available_without_relation'))
         return [] if isinstance(obj, ErrorObject) else BuyOptionObject.to_list_of_object(obj)
 
     def get_by_id(self, id):
