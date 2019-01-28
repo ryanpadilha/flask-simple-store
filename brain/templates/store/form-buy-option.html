@@ -1,0 +1,193 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="content-header">
+    <h1>&nbsp;</h1>
+    <ol class="breadcrumb">
+        <li><a href="{{ url_for('website.index') }}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li>Publicação</li>
+        <li class="active">Cadastro de Opção Compra</li>
+    </ol>
+</section>
+
+<script type="text/javascript">
+
+    $(function () {
+        $("#normal_price").maskMoney({
+            symbol: 'R$',
+            prefix: 'R$ ',
+            showSymbol: true,
+            thousands: '.',
+            decimal: ',',
+            precision: 2,
+            allowZero: true,
+            allowNegative: false,
+            symbolStay: true});
+
+        $("#sale_price").maskMoney({
+            symbol: 'R$',
+            prefix: 'R$ ',
+            showSymbol: true,
+            thousands: '.',
+            decimal: ',',
+            precision: 2,
+            allowZero: true,
+            allowNegative: false,
+            symbolStay: true});
+
+        $("#percentage_discount").maskMoney({
+            symbol: '%',
+            suffix: ' %',
+            showSymbol: true,
+            thousands: '.',
+            decimal: ',',
+            precision: 2,
+            allowZero: true,
+            allowNegative: false,
+            symbolStay: true});
+
+        $("#normal_price").maskMoney('mask', $("#normal_price").val());
+        $("#sale_price").maskMoney('mask', $("#sale_price").val());
+        $("#percentage_discount").maskMoney('mask', $("#percentage_discount").val());
+
+        $("#normal_price").bind('keyup', function () {
+            var price = $(this).maskMoney('unmasked')[0];
+            $("#sale_price").maskMoney('mask', price);
+        });
+
+        $("#percentage_discount").bind('keyup', function () {
+           var discount = $(this).val();
+           var price_discount = 0;
+           var price_full = 0;
+
+           if (discount) {
+                price_full = $("#normal_price").maskMoney('unmasked')[0];
+
+                discount = parseFloat(discount);
+                price_full = parseFloat(price_full);
+                price_discount = price_full - (Math.round(price_full * discount) / 100);
+           }
+
+           $("#sale_price").maskMoney('mask', price_discount);
+        });
+    });
+
+
+</script>
+<section class="content">
+    {% include 'commons/messages.html' %}
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">Cadastro</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove"><i class="fa fa-times"></i></button>
+            </div>
+        </div>
+
+        <form role="form" method="POST" autocomplete="off">
+        	<div class="box-body">
+                <h4 style="background-color:#f7f7f7; font-size: 18px; font-weight: bold; text-align: center; padding: 7px 10px; margin-top: 0;">
+                    Dados Principais
+                </h4>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div {% if form.title.errors %} class="form-group has-error" {% else %} class="form-group" {% endif %}>
+                            {{ form.title.label }}
+                            {{ form.title(class_='form-control', autocomplete='nope') }}
+
+                            {% for error in form.title.errors %}
+                                <span class="help-block">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div {% if form.normal_price.errors %} class="form-group has-error" {% else %} class="form-group" {% endif %}>
+                            {{ form.normal_price.label }}
+                            {{ form.normal_price(class_='form-control', autocomplete='nope') }}
+
+                            {% for error in form.normal_price.errors %}
+                                <span class="help-block">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div {% if form.sale_price.errors %} class="form-group has-error" {% else %} class="form-group" {% endif %}>
+                            {{ form.sale_price.label }}
+                            {{ form.sale_price(class_='form-control', autocomplete='nope') }}
+
+                            {% for error in form.sale_price.errors %}
+                                <span class="help-block">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div {% if form.percentage_discount.errors %} class="form-group has-error" {% else %} class="form-group" {% endif %}>
+                            {{ form.percentage_discount.label }}
+                            {{ form.percentage_discount(class_='form-control', autocomplete='nope') }}
+
+                            {% for error in form.percentage_discount.errors %}
+                                <span class="help-block">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="datepicker-container">
+                    <div class="col-md-4">
+                        <div {% if form.quantity_cupom.errors %} class="form-group has-error" {% else %} class="form-group" {% endif %}>
+                            {{ form.quantity_cupom.label }}
+                            {{ form.quantity_cupom(class_='form-control', multiple='multiple', autocomplete='nope') }}
+
+                            {% for error in form.quantity_cupom.errors %}
+                                <span class="help-block">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div {% if form.start_date.errors %} class="form-group has-error" {% else %} class="form-group" {% endif %}>
+                            {{ form.start_date.label }}
+
+                            <div class="input-group date">
+                                <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                {{ form.start_date(class_='form-control', multiple='multiple', autocomplete='nope') }}
+                            </div>
+
+                            {% for error in form.start_date.errors %}
+                                <span class="help-block">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div {% if form.end_date.errors %} class="form-group has-error" {% else %} class="form-group" {% endif %}>
+                            {{ form.end_date.label }}
+
+                            <div class="input-group date">
+                                <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                                {{ form.end_date(class_='form-control', autocomplete='nope') }}
+                            </div>
+
+                            {% for error in form.end_date.errors %}
+                                <span class="help-block">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        	<div class="box-footer">
+        		{{ form.hidden_tag() }}
+                <button type="submit" class="btn btn-primary pull-right" style="width: 100px;">Salvar</button>
+                <a href="{{ url_for('manage.list_options') }}">
+                	<button type="button" class="btn btn-default pull-right" style="width: 100px; margin-right: 5px;">Voltar</button>
+                </a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

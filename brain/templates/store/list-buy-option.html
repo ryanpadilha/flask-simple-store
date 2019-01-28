@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="content-header">
+    <h1>&nbsp;</h1>
+    <ol class="breadcrumb">
+        <li><a href="{{ url_for('website.index') }}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li>Publicação</li>
+        <li class="active">Cadastro de Opção Compra</li>
+    </ol>
+</section>
+
+<section class="content">
+    {% include 'commons/messages.html' %}
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">Relação de opções de compra</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove"><i class="fa fa-times"></i></button>
+            </div>
+        </div>
+        <div class="box-header" style="width: 150px;">
+        	<a href="{{ url_for('manage.form_option') }}">
+        	    <button type="button" class="btn btn-block btn-primary">Novo Cadastro</button>
+        	</a>
+        </div>
+        <h4 style="background-color:#3c8dbc; font-size: 18px; font-weight: bold; text-align: center; padding: 1px 10px; margin-top: 0;"></h4>
+        <div class="box-body">
+            <table id="dt_basic" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Preço Nominal</th>
+                        <th>Preço de Venda</th>
+                        <th>Quantidade Cupons</th>
+                        <th>Data Publicação</th>
+                        <th>Data Expiração</th>
+                        <th class="text-center footable-visible footable-last-column">Editar</th>
+                        <th class="text-center footable-visible footable-last-column">Deletar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for option in options %}
+                <tr>
+                	<td>{{ option.title }}</td>
+                    <td>{{ 'R$ %0.2f'| format(option.normal_price|float) }}</td>
+                    <td>{{ 'R$ %0.2f'| format(option.sale_price|float) }}</td>
+                    <td>{{ option.quantity_cupom }}</td>
+                    <td>{{ option.start_date.strftime('%d/%m/%Y') }}</td>
+                    <td>{{ option.end_date.strftime('%d/%m/%Y') }}</td>
+                	<td class="text-center footable-visible footable-last-column">
+                		<a href="{{ url_for('manage.edit_option', id=option.id) }}">
+                			<button type="button" class="btn bg-navy btn-xs"><i class="fa fa-edit"></i></button>
+                		</a>
+                	</td>
+                	<td class="text-center footable-visible footable-last-column">
+                		<button type="button" class="open-modal btn btn-danger btn-xs" data-toggle="modal"
+                			data-target="#modal-default"  data-id="{{ option.id }}"><i class="fa fa-trash-o"></i></button>
+                	</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="box-footer"></div>
+    </div>
+
+    <!-- /.modal -->
+    <div class="modal fade" tabindex="-1" id="modal-default">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="fa fa-warning"></i>&nbsp;Confirmação</h4>
+                </div>
+
+                <form role="form" method="POST" action="{{ url_for('manage.delete_option') }}">
+	                <div class="modal-body">
+	                    <p>Deseja realmente <strong>deletar o registro?</strong></p>
+	                </div>
+	                <div class="modal-footer">
+	              	    <input type="hidden" id="recordId" name="recordId">
+	                    <button type="submit" class="btn btn-danger pull-right" style="width: 100px;"><i class="fa fa-trash-o"></i>&nbsp;Deletar</button>
+	                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal" style="width: 100px; margin-right: 5px;"><i class="fa fa-times"></i>&nbsp;Cancelar</button>
+	                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

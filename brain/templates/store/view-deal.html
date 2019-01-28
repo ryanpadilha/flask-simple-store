@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="content-header">
+    <h1>&nbsp;</h1>
+    <ol class="breadcrumb">
+        <li><a href="{{ url_for('website.index') }}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Visualização de Oferta</li>
+    </ol>
+</section>
+
+<section class="content">
+    {% include 'commons/messages.html' %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <strong>Informações sobre a oferta</strong>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="text-center">
+                                <strong style="font-size: 24px;">{{ deal.title }}</strong><br>
+                                {{ 'Aqui você encontra os melhores preços de produtos' if deal.type == 'PRODUCT' }}
+                                {{ 'Aqui você encontra os melhores preços em sua região' if deal.type == 'LOCAL' }}
+                                {{ 'Viaje para qualquer lugar aproveitando os melhores preços' if deal.type == 'TRAVEL' }}
+                            </p><hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="" align="center" style="border: 2px solid #f3f3f3;">
+                                <img class="img-responsive" style="padding: 5px;" src="{{ url_for('static', filename='dist/img/image-none.png') }}" alt="">
+                            </div>
+                            <div align="center" style="border: 0px solid #f3f3f3;">
+                                <p style="padding-top: 10px; font-size: 15px; color: #555">
+                                    <strong>{{ deal.total_sold }} <br>Cupons Vendidos</strong>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-7" style="padding-top: 30px;">
+                            {% for opt in deal.options|sort(attribute='sale_price', reverse=False) %}
+                                <form role="form" method="POST" action="{{ url_for('manage.buy_option', deal=deal.id, option=opt.id) }}" autocomplete="off">
+                                <div class="box-footer" style="min-height: 70px;">
+                                    <p class="pull-left" style="padding-left: 20px; font-size: 15px; color: #444;">
+                                        {{ opt.title }}<br>
+                                        {{ opt.quantity_cupom }} cupons disponíveis
+                                    </p>
+                                    <p class="pull-right">
+                                        {% if opt.quantity_cupom <= 0 or opt.end_date|date_lower_than_now %}
+                                            <button disabled="disabled" type="submit" class="btn btn-primary pull-right"  style="width: 100px;">Comprar</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-primary pull-right" style="width: 100px;">Comprar</button>
+                                        {% endif %}
+                                    </p>
+                                    <p class="pull-right" style="padding-top: 5px; padding-right: 20px;">
+                                        {% if opt.percentage_discount|float > 0 %}
+                                            <span style="font-size: 15px; color: #686f7a; text-decoration: line-through;">{{ opt.normal_price|format_currency }}</span>&nbsp;&nbsp;
+                                            <span style="font-size: 18px; font-weight: 600; color: #29303b;">{{ opt.sale_price|format_currency }}</span>
+                                        {% else %}
+                                            <span style="font-size: 18px; font-weight: 600; color: #29303b;">{{ opt.normal_price|format_currency }}</span>&nbsp;&nbsp;
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                </form>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-5">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="row">
+                        <div class="col-md-4">
+
+                        </div>
+                        <div class="col-md-8" style="padding-left: 50px;">
+                            <span style="font-weight: bold;">Detalhes da Oferta</span><hr>
+                            {{ deal.text|safe }}<br>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+
+        </div>
+        <div class="col-md-4">
+
+        </div>
+    </div>
+</section>
+{% endblock %}

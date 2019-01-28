@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="content-header">
+    <h1 class="page-header">Ofertas <small>Veja todos as ofertas disponíveis</small></h1>
+
+    <ol class="breadcrumb">
+        <li><a href="{{ url_for('website.index') }}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Catálogo de Ofertas</li>
+    </ol>
+</section>
+
+<section class="content">
+    {% include 'commons/messages.html' %}
+
+    <div class="row">
+        {% for deal in deals %}
+        <div class="col-md-3">
+            <div class="box box-widget" onclick="location.href='{{ url_for('manage.view_deal_details', url=deal.url) }}'" style="cursor: pointer;">
+                <div class="box-body" style="padding: 0px;">
+                    <img class="img-responsive" style="padding: 5px;" src="{{ url_for('static', filename='dist/img/image-none.png') }}" alt="">
+                </div>
+
+                <div class="box-footer box-comments" style="min-height: 120px;">
+                    <div class="box-comment">
+                        <div class="comment-text" style="margin-left: 5px; margin-right: 5px;">
+                            <span class="username" style="padding-bottom: 0px; font-size: 16px;">{{ deal.title }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box-footer" style="min-height: 60px;">
+                    {% set min_value = {'value': 0, 'id': 0} %}
+                    {% for opt in deal.options|sort(attribute='sale_price', reverse=False) %}
+                        {% if loop.index == 1 %}
+                            {% set _ = min_value.update({'value':opt.sale_price, 'id':opt.id}) %}
+                        {% endif %}
+
+                        {% if opt.sale_price < min_value.value %}
+                            {% set _ = min_value.update({'value':opt.sale_price, 'id':opt.id}) %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for opt in deal.options if opt.id == min_value.id %}
+                    <p style="margin-top: 4px; margin-left: 5px;">
+                        {% if opt.percentage_discount|float > 0 %}
+                            <span style="font-size: 15px; color: #686f7a; text-decoration: line-through;">{{ opt.normal_price|format_currency }}</span>&nbsp;&nbsp;
+                            <span style="font-size: 18px; font-weight: 600; color: #29303b;">{{ opt.sale_price|format_currency }}</span>
+                        {% else %}
+                            <span style="font-size: 18px; font-weight: 600; color: #29303b;">{{ opt.normal_price|format_currency }}</span>&nbsp;&nbsp;
+                        {% endif %}
+                    </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
